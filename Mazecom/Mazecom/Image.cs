@@ -30,7 +30,7 @@ namespace Mazecom
                 Sdl_Manager.Error("Imagen inexistente: " + fileName);
         }
 
-        /// Dibuja una imagen en unas coordenadas (se apoya en Hardware)
+        /// Dibuja una imagen en unas coordenadas (se apoya en Sdl Manager)
         public void Draw(int x, int y)
         {
             Sdl_Manager.DrawHiddenImage(internalPointer, x, y);
