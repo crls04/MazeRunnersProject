@@ -1,9 +1,10 @@
-E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Mazecom.exe.config
-E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Mazecom.exe
-E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Mazecom.pdb
+E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Tao.Sdl.xml
 E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.csproj.AssemblyReference.cache
 E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.csproj.SuggestedBindingRedirects.cache
 E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.csproj.CoreCompileInputs.cache
+E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.csproj.CopyComplete
+E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Mazecom.exe.config
+E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Mazecom.exe
+E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Mazecom.pdb
 E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.exe
 E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.pdb
-E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.csproj.CopyComplete

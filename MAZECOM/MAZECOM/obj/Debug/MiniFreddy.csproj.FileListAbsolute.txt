@@ -1,0 +1,26 @@
+C:\Users\nacho\source\repos\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.exe.config
+C:\Users\nacho\source\repos\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.exe
+C:\Users\nacho\source\repos\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.pdb
+C:\Users\nacho\source\repos\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csprojAssemblyReference.cache
+C:\Users\nacho\source\repos\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.CoreCompileInputs.cache
+C:\Users\nacho\source\repos\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.CopyComplete
+C:\Users\nacho\source\repos\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.exe
+C:\Users\nacho\source\repos\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.pdb
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.exe.config
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.exe
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.pdb
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.AssemblyReference.cache
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.SuggestedBindingRedirects.cache
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.CoreCompileInputs.cache
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.CopyComplete
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.exe
+C:\Users\cxrls04\Downloads\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.pdb
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.exe.config
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.exe
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\bin\Debug\MiniFreddy.pdb
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.AssemblyReference.cache
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.SuggestedBindingRedirects.cache
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.CoreCompileInputs.cache
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.csproj.CopyComplete
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.exe
+E:\MAZE RUNNERS\MiniFreddy\MiniFreddy\obj\Debug\MiniFreddy.pdb

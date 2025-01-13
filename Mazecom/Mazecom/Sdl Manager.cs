@@ -35,7 +35,6 @@ namespace Mazecom
 
             Sdl.SDL_Rect rect2 = new Sdl.SDL_Rect(0, 0, (short)broad, (short)high);
             Sdl.SDL_SetClipRect(hiddenScreen, ref rect2);
-
             SdlTtf.TTF_Init();
         }
 
@@ -69,7 +68,7 @@ namespace Mazecom
 
         public static IntPtr LoadImage(string file)
         {
-            IntPtr image;
+            IntPtr image = IntPtr.Zero;
             image = SdlImage.IMG_Load(file);
             if (image == IntPtr.Zero)
             {
