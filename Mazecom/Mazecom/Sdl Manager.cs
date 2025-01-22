@@ -36,6 +36,9 @@ namespace Mazecom
             Sdl.SDL_Rect rect2 = new Sdl.SDL_Rect(0, 0, (short)broad, (short)high);
             Sdl.SDL_SetClipRect(hiddenScreen, ref rect2);
             SdlTtf.TTF_Init();
+
+            if (SdlMixer.Mix_OpenAudio(22050, unchecked(Sdl.AUDIO_S16LSB), 2, 1024) == -1)
+                Error("No se ha podido inicializar el sonido");
         }
 
         /// Dibuja una image en pantalla oculta, en ciertas coordenadas
@@ -115,11 +118,14 @@ namespace Mazecom
         public static bool KeyPressed(int c)
         {
             bool pulsada = false;
+
             Sdl.SDL_PumpEvents();
             Sdl.SDL_Event suceso;
             Sdl.SDL_PollEvent(out suceso);
+
             int numkeys;
             byte[] teclas = Tao.Sdl.Sdl.SDL_GetKeyState(out numkeys);
+
             if (teclas[c] == 1)
                 pulsada = true;
             return pulsada;

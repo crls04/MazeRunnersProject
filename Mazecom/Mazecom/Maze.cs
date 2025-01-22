@@ -14,6 +14,7 @@ namespace Mazecom
         int[,] maze;
         int rows, columns;
         Random random;
+       
         
         public Maze(int rows, int columns)
         {
@@ -23,6 +24,7 @@ namespace Mazecom
             maze=new int[rows, columns];
             random = new Random();
             maze[12, 12] = 1; // centro vacio para condicion de victoria.
+            
         }
         //metodo que imprime el laberinto en consola.
         public void PrintMaze()

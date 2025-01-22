@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -16,12 +17,13 @@ namespace Mazecom
         static int cantItems;
         static int points;
         static Font type;
+        static Sound sound;
 
         static void Main(string[] args)
         {
             InicializarJuego();
 
-            Maze mz = new Maze(25, 25);//crea el laberinto cuadrado de 15x15
+            Maze mz = new Maze(25, 25);//crea el laberinto cuadrado de 25x25
             mz.SpawnPoints();
 
             
@@ -42,21 +44,23 @@ namespace Mazecom
             character.SetBroadHigh(48, 45);
             x = 600;
             y = 300;
-            /*
+            
             cantItems = 20;
             items = new Sprites[cantItems];
             for (int i = 0; i < cantItems; i++)
             {
-               // items[i] = new Sprites("");
+                items[i] = new Sprites("Datos\\llave.png");
                 items[i].MoverA(
                     generador.Next(100, 1100),
                     generador.Next(100, 600));
                 items[i].SetBroadHigh(60, 18);
             }
-            */
+            
             type = new Font("Datos\\Joystix.ttf", 18);
             finished = false;
             points = 0;
+
+            sound = new Sound("Datos\\sound.mp3");
         }
 
         private static void DrawPantalla()
@@ -107,6 +111,7 @@ namespace Mazecom
                 {
                     points += 10;
                     items[i].ActiveSet(false);
+                    sound.Play();
                 }
             }
 
