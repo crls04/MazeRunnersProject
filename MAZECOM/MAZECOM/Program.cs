@@ -10,36 +10,90 @@ namespace Mazecom
 {
     internal class Program
     {
-        static bool finished;
+        static bool gameOver;
+        static bool sessionEnded;
         static Sprites character;
         static Sprites[] items;
         static int x, y;
         static int cantItems;
         static int points;
         static Font type;
+        static Font type1;
         static Sound sound;
 
         static void Main(string[] args)
         {
-            InicializarJuego();
+            InitializeSession();
 
-            Maze mz = new Maze(25, 25);//crea el laberinto cuadrado de 25x25
-            mz.SpawnPoints();
-
-            
-            
-            while (!finished)
+            do
             {
-                DrawPantalla();
-                ComprobarEntradaUsuario();
-                ComprobarEstadoDelJuego();
-                PausaHastaFinDeFotograma();
+                InitialMenu();
+
+                if (!sessionEnded)
+                {
+
+
+                    InitializeGame();
+
+                    while (!gameOver)
+                    {
+                        DrawPantalla();
+                        ComprobarEntradaUsuario();
+                        ComprobarEstadoDelJuego();
+                        PausaHastaFinDeFotograma();
+                    }
+                }
             }
+            while (!sessionEnded);
         }
-        private static void InicializarJuego()
+        private static void InitializeSession()
+        {
+            Sdl_Manager.Initialize(1280, 720, 24);
+            sessionEnded = false;
+
+            type = new Font("Datos\\Joystix.ttf", 18);
+            type1 = new Font("Datos\\Joystix.ttf", 48);
+        }
+        private static void InitialMenu()
+        {
+            bool endMenu = false;
+            Sdl_Manager.DeleteHiddenScreen();
+
+            Sdl_Manager.WriteHiddenTxt("MAZE RUNER",
+                400, 150, //coordenadas
+                200, 200, 200, //colores
+                type1);
+            Sdl_Manager.WriteHiddenTxt("Pulsa SPACE para jugar",
+                500, 350, //coordenadas
+               180, 180, 180, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("Pulsa ESCAPE para salir",
+                500, 400, //coordenadas
+               160, 160, 160, //colores
+               type);
+
+            Sdl_Manager.DisplayHidden();
+
+            do
+            {
+                Sdl_Manager.Pause(20);
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.keySpa))
+                {
+                    endMenu = true;
+
+                }
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
+                {
+                    endMenu = true;
+                    sessionEnded = true;
+                }
+            }
+            while (!endMenu);
+        }
+        private static void InitializeGame()
         {
             Random generador = new Random();
-            Sdl_Manager.Initialize(1280, 720, 24);
+            
             character = new Sprites("Datos\\llave.png");
             character.SetBroadHigh(48, 45);
             x = 600;
@@ -56,8 +110,8 @@ namespace Mazecom
                 items[i].SetBroadHigh(60, 18);
             }
             
-            type = new Font("Datos\\Joystix.ttf", 18);
-            finished = false;
+            
+            gameOver = false;
             points = 0;
 
             sound = new Sound("Datos\\sound.mp3");
@@ -99,7 +153,7 @@ namespace Mazecom
 
 
             if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
-                finished = true;
+                gameOver = true;
         }
 
 

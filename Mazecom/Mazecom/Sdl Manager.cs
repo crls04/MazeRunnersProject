@@ -157,6 +157,7 @@ namespace Mazecom
 
 
         // Definiciones de teclas
+        public static int key20 = Sdl.SDLK_KP_ENTER;
         public static int keyEsc = Sdl.SDLK_ESCAPE;
         public static int keySpa = Sdl.SDLK_SPACE;
         public static int keyA = Sdl.SDLK_a;
