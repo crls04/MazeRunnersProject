@@ -1,78 +1,125 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Mazecom
 {
-    public class Maze
+
+
+    class Maze
     {
-        //Comenzando con la estrctura del laberinto.
-        int[,] maze;
-        int rows, columns;
-        Random random;
-       
-        
-        public Maze(int rows, int columns)
+        public int xMap = 300, yMap = 30;
+        public int broadTile = 30, highTile = 30;
+        public char[,] maze;
+
+        public  void GenerarLaberinto(int n)
         {
-            //inicializando variables.
-            this.rows = rows;
-            this.columns = columns;
-            maze=new int[rows, columns];
-            random = new Random();
-            maze[12, 12] = 1; // centro vacio para condicion de victoria.
-            
+            // Inicializar la matriz con paredes (#)
+            maze = new char[n, n];
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    maze[i, j] = '#';
+                }
+            }
+
+            // Definir el centro de la matriz
+            int centro = n / 2;
+
+            // Función recursiva para generar el maze
+            void CarvePath(int x, int y)
+            {
+                // Definir las direcciones posibles (arriba, derecha, abajo, izquierda)
+                int[][] direcciones = new int[][]
+                {
+                new int[] {0, 1},
+                new int[] {1, 0},
+                new int[] {0, -1},
+                new int[] {-1, 0}
+                };
+                Random rnd = new Random();
+                direcciones = direcciones.OrderBy(d => rnd.Next()).ToArray(); // Aleatorizar las direcciones
+
+                foreach (var d in direcciones)
+                {
+                    int nx = x + d[0], ny = y + d[1];
+                    if (nx > 0 && ny > 0 && nx < n - 1 && ny < n - 1 && maze[nx, ny] == '#')
+                    {
+                        if (maze[nx + d[0], ny + d[1]] == '#' && nx + d[0] > 0 && ny + d[1] > 0 && nx + d[0] < n - 1 && ny + d[1] < n - 1)
+                        {
+                            maze[nx, ny] = ' ';
+                            maze[nx + d[0], ny + d[1]] = ' ';
+                            CarvePath(nx + d[0], ny + d[1]);
+                        }
+                    }
+                }
+            }
+
+            // Comenzar desde una esquina y crear el camino al centro
+            int startX = 1, startY = 1;
+            maze[startX, startY] = ' ';
+            CarvePath(startX, startY);
+
+            // Asegurar que el centro esté conectado y marcado con 'S'
+            maze[centro, centro] = 'S';
+
+            // Conectar todos los pasillos al centro
+            ConectarPasillosAlCentro(maze, centro, centro);
+
         }
-        //metodo que imprime el laberinto en consola.
-        public void PrintMaze()
+
+        static void ConectarPasillosAlCentro(char[,] maze, int cx, int cy)
+        {
+            int n = maze.GetLength(0);
+            bool[,] visitado = new bool[n, n];
+
+            void DFS(int x, int y)
+            {
+                if (x < 0 || x >= n || y < 0 || y >= n || maze[x, y] == '#' || visitado[x, y])
+                    return;
+
+                visitado[x, y] = true;
+
+                int[][] direcciones = new int[][]
+                {
+                new int[] {0, 1},
+                new int[] {1, 0},
+                new int[] {0, -1},
+                new int[] {-1, 0}
+                };
+
+                foreach (var d in direcciones)
+                {
+                    DFS(x + d[0], y + d[1]);
+                }
+            }
+
+            DFS(cx, cy);
+
+            for (int x = 0; x < n; x++)
+            {
+                for (int y = 0; y < n; y++)
+                {
+                    if (maze[x, y] == ' ' && !visitado[x, y])
+                    {
+                        maze[x, y] = '#'; // Convertir los pasillos aislados en paredes
+                    }
+                }
+            }
+        }
+
+        public static void Imprimirmaze(char[,] maze)
         {
             for (int i = 0; i < maze.GetLength(0); i++)
             {
-                for (int j = 0; j < maze.GetLength(1); j++)
+                for (int j = 0; j < maze.GetLength(0); j++)
                 {
-                    Console.Write(maze[i, j] == 1 ? "  " : " #"); //1 es un pasillo y 0 una pared
+                    Console.Write(maze[i, j]);
                 }
                 Console.WriteLine();
             }
         }
-        //metodo para seleccionar un punto de partida aleatorio en cada esquina exclyendo los bordes.
-        public int[,] SpawnPoints()
-        {
-              
-            int spawnPoint = random. Next(1,5);
-            int newRows, newColumns; // variables para guardar los valores y utilizarlos en otros players.
-            
-                if (spawnPoint == 1)
-                {
-                    maze[1, 1] = 1;
-                    newRows = 1;
-                    newColumns = 1;
-                }
-                else if (spawnPoint == 2)
-                {
-                    maze[maze.GetLength(0) - 2, 1] = 1;
-                    newRows = maze.GetLength(0) - 2;
-                    newColumns = 1;  
-                }
-                else if (spawnPoint == 3)
-                {
-                    maze[1, maze.GetLength(1) - 2] = 1;
-                    newRows = 1;
-                    newColumns = maze.GetLength(1) - 2;
-                }
-                else
-                {
-                    maze[maze.GetLength(0) - 2, maze.GetLength(1) - 2] = 1;
-                    newRows = maze.GetLength(0) - 2;
-                    newColumns = maze.GetLength(1) - 2;
-                }
-            return maze;
-        }
-
-        
     }
-    
+
 }

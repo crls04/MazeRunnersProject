@@ -153,6 +153,20 @@ namespace Mazecom
             else
                 return false;
         }
+        public bool Collides(int xInit, int yInit, int xEnd, int yEnd)
+        {
+            // No se debe chocar con un elemento oculto      
+            if (asset == false)
+                return false;
+            // Ahora ya compruebo coordenadas
+            if ((x<xEnd)
+                && (x+broad>xInit)
+                && (y<yEnd)
+                && (y + high > yInit))
+                return true;
+            else
+                return false;
+        }
 
         /// Prepara el siguiente fotograma, para animar el movimiento de
         /// un personaje
