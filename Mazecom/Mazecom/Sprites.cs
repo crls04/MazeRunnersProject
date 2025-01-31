@@ -8,7 +8,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Mazecom
 {
-    internal class Sprites
+     class Sprites
     {
         // Atributos
         protected int x;
@@ -159,10 +159,7 @@ namespace Mazecom
             if (asset == false)
                 return false;
             // Ahora ya compruebo coordenadas
-            if ((x<xEnd)
-                && (x+broad>xInit)
-                && (y<yEnd)
-                && (y + high > yInit))
+            if ((x<xEnd) && (x+broad>xInit) && (y<yEnd) && (y + high > yInit))
                 return true;
             else
                 return false;

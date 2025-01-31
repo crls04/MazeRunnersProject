@@ -12,30 +12,43 @@ namespace Mazecom
     {
         static bool gameOver;
         static bool sessionEnded;
-        static Sprites character;
         static Sprites[] items;
         static Sprites[,] walls;
-        static int x, y;
         static int cantItems;
-        static int points;
         static Font type;
         static Font type1;
         static Sound sound;
         static Maze maze;
-
+        static PlayerData Player1,Player2;
+        static string[] Tokens = new string[2];
+        static int Count = 5;
         static void Main(string[] args)
         {
+            Tokens[0] = "Datos\\RedHollow.png";
+            Tokens[1] = "Datos\\BlueHollow.png";
+
+            Player1 = new PlayerData("Carlos", Count, Tokens[0]);
+            Player2 = new PlayerData("Javier", Count, Tokens[1]);
+
             InitializeSession();
             maze = new Maze();
             maze.GenerarLaberinto(21);
-            
-            // Imprimir el laberinto
-            //Maze.Imprimirmaze(maze.maze);
 
             do
             {
                 InitialMenu();
+                InitialSelectedPlay();
+                for (int i = 12; i < maze.maze.GetLength(0); i++)
+                {
+                    for (int j = 12; j < maze.maze.GetLength(1); j++)
+                    {
+                        if (maze.maze[i, j] == ' ')
+                        {
+                            Player1.tokens[0].Move(maze.xMap + i * maze.broadTile, maze.yMap + j * maze.highTile);
 
+                        }
+                    }
+                }
                 if (!sessionEnded)
                 {
 
@@ -44,9 +57,9 @@ namespace Mazecom
 
                     while (!gameOver)
                     {
-                        
+
                         DrawPantalla(maze);
-                        ComprobarEntradaUsuario();
+                        ComprobarEntradaUsuario(Player1.tokens[0]);
                         ComprobarEstadoDelJuego();
                         PausaHastaFinDeFotograma();
                     }
@@ -98,21 +111,96 @@ namespace Mazecom
             }
             while (!endMenu);
         }
+
+        private static void InitialSelectedPlay()
+        {
+            bool endMenu = false;
+            Sdl_Manager.DeleteHiddenScreen();
+
+            Sdl_Manager.WriteHiddenTxt("MAZE RUNER",
+                450, 200, //coordenadas
+                200, 200, 200, //colores
+                type1);
+            Sdl_Manager.WriteHiddenTxt("Selecione la cantidad de fichas que desea",
+                350, 350, //coordenadas
+               180, 180, 180, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("Pulsa la tecla que indique la opcion que desea",
+                310, 400, //coordenadas
+               160, 160, 160, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("1- 1 Fichas",
+                310, 450, //coordenadas
+               160, 160, 160, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("2- 2 Fichas",
+                310, 500, //coordenadas
+               160, 160, 160, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("3- 3 Fichas",
+                310, 550, //coordenadas
+               160, 160, 160, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("4- 4 Fichas",
+                700, 450, //coordenadas
+               160, 160, 160, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("5- 5 Fichas",
+                700, 500, //coordenadas
+               160, 160, 160, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("6- 6 Fichas",
+                700, 550, //coordenadas
+               160, 160, 160, //colores
+               type);
+
+            Sdl_Manager.DisplayHidden();
+
+            do
+            {
+                Sdl_Manager.Pause(20);
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.key1))
+                {
+                    endMenu = true;
+                    Count = 1;
+                }
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.key2))
+                {
+                    endMenu = true;
+                    Count = 2;
+                }
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.key3))
+                {
+                    endMenu = true;
+                    Count = 3;
+                }
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.key4))
+                {
+                    endMenu = true;
+                    Count = 4;
+                }
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.key5))
+                {
+                    endMenu = true;
+                    Count = 5;
+                }
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.key6))
+                {
+                    endMenu = true;
+                    Count = 6;
+                }
+
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
+                {
+                    endMenu = true;
+                    sessionEnded = true;
+                }
+            }
+            while (!endMenu);
+        }
         private static void InitializeGame(Maze maze)
         {
             Random generador = new Random();
-            
-
-
-
-
-
-            character = new Sprites("Datos\\soul.png");
-            character.SetBroadHigh(10, 10);
-            x = 600;
-            y = 300;
-
-
 
 
             walls = new Sprites[maze.maze.GetLength(0), maze.maze.GetLength(1)];
@@ -133,9 +221,9 @@ namespace Mazecom
                         walls[i, j].SetBroadHigh(maze.broadTile, maze.highTile);
                     }
 
-                    if (maze.maze[i,j] == ' ')
+                    if (maze.maze[i, j] == ' ')
                     {
-                        if(item < items.Length)
+                        if (item < items.Length)
                         {
                             items[item] = new Sprites("Datos\\soul.png");
                             items[item].MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
@@ -145,29 +233,7 @@ namespace Mazecom
                     }
                 }
             }
-            /*
-            for (int i = 0; i < cantItems; i++)
-            {
-                bool validPosition = false;
-                do
-                {
-                    int xWalls = generador.Next(100, 1100);
-                    int yWalls = generador.Next(100, 600);
-                    validPosition = PossibleToMove(xWalls, yWalls, xWalls + maze.broadTile, yWalls + maze.highTile);
-                    if (validPosition)
-                    {
-                        items[i] = new Sprites("Datos\\llave.png");
-                        items[i].MoverA(xWalls, yWalls);
-                        items[i].SetBroadHigh(60, 18);
-                    }
-                }while(!validPosition);
-                
-               
-            }
-            */
-            
             gameOver = false;
-            points = 0;
 
 
             sound = new Sound("Datos\\sound.mp3");
@@ -181,18 +247,23 @@ namespace Mazecom
             {
                 for (int j = 0; j < maze.maze.GetLength(1); j++)
                 {
-                    if (walls[i, j] !=null)
+                    if (walls[i, j] != null)
                     {
                         walls[i, j].Draw();
                     }
                 }
             }
 
-                        Sdl_Manager.WriteHiddenTxt(
-                "points " + points,
-                10, 10,
-                255, 0, 0,
-                type);
+            Sdl_Manager.WriteHiddenTxt(
+    "Humanity P1: " + Player1.Puntos,
+    40, 10,
+    255, 0, 0,
+    type);
+            Sdl_Manager.WriteHiddenTxt(
+    "Humanity P2: " + Player2.Puntos,
+    1000, 10,
+    0, 0, 255,
+    type);
 
 
             for (int i = 0; i < cantItems; i++)
@@ -200,48 +271,59 @@ namespace Mazecom
                 items[i].Draw();
             }
 
-            character.MoverA(x, y);
-            character.Draw();
-
+            //Modifiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+            Player1.tokens[0].Move(Player1.tokens[0].PosX, Player1.tokens[0].PosY);
             Sdl_Manager.DisplayHidden();
         }
 
-        private static void ComprobarEntradaUsuario()
+        private static void ComprobarEntradaUsuario(Token token)
         {
             if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyLf))
-                && PossibleToMove(x-3,y,x+48-3,y+45))
-                x -= 3;
+                && PossibleToMove(token.PosX - 30, token.PosY, token.PosX, token.PosY + 30))
+                token.PosX -= 30;
             if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyRg))
-                && PossibleToMove(x+3,y,x+48+3,y+45))
-                x += 3;
+                && PossibleToMove(token.PosX + 30, token.PosY, token.PosX + 60, token.PosY + 30))
+                token.PosX += 30;
             if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyUp))
-                && PossibleToMove(x,y-3,x+48,y+45-3))
-                y -= 3;
+                && PossibleToMove(token.PosX, token.PosY - 30, token.PosX + 30, token.PosY))
+                token.PosY -= 30;
             if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyDown))
-                && PossibleToMove(x,y+3,x+48,y+45+3))
-                y += 3;
+                && PossibleToMove(token.PosX, token.PosY + 30, token.PosX + 30, token.PosY + 60))
+                token.PosY += 30;
 
 
             if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
                 gameOver = true;
         }
 
-
+        //modiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
         private static void ComprobarEstadoDelJuego()
         {
-            for (int i = 0; i < cantItems; i++)
+            for (int i = 0; i < Player1.tokens.Length; i++)
             {
-                if (items[i].Collides(character))
+                if (Colisiona(items, Player1.tokens[i].sprite))
                 {
-                    points += 10;
-                    items[i].ActiveSet(false);
+                    Player1.Puntos += 10;
                     sound.Play();
                 }
             }
 
-           
-        }
 
+        }
+        public static bool Colisiona(Sprites[] sp, Sprites token)
+        {
+
+            for (int i = 0; i < sp.Length; i++)
+            {
+                if (token.Collides(sp[i]))
+                {
+                    sp[i].ActiveSet(false);
+                    return true;
+                }
+            }
+
+            return false;
+        }
         private static void PausaHastaFinDeFotograma()
         {
             Sdl_Manager.Pause(20);
@@ -257,7 +339,7 @@ namespace Mazecom
                     {
                         if (walls[i, j].Collides(
                             xInit, yInit, xEnd, yEnd))
-                             return false;
+                            return false;
                     }
                 }
             }
