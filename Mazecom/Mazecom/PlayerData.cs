@@ -14,13 +14,13 @@ namespace Mazecom
         public int Puntos;
 
 
-        public PlayerData(string name,int n,string img)
+        public PlayerData(string name,int n,string[] img)
         {
             Name = name;
             tokens = new Token[n];
             for(int i = 0; i < n; i++)
             {
-                tokens[i] = new Token(img, 100, 100);
+                tokens[i] = new Token(img[i], 100, 100);
             }
             Puntos = 0;
         }

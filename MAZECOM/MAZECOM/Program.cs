@@ -22,16 +22,26 @@ namespace Mazecom
         static Sound sound;
         static Maze maze;
         static PlayerData Player1,Player2;
-        static string[] Tokens = new string[2];
+        static string[] TokensR = new string[6];
+        static string[] TokensB = new string[6];
         static int Count;
         static Token TokenSelected;
         static int Turno = 1;
         static void Main(string[] args)
         {
-            Tokens[0] = "Datos\\RedHollow.png";
-            Tokens[1] = "Datos\\BlueHollow.png";
+            TokensR[0] = "Datos\\1r.png";
+            TokensR[1] = "Datos\\2r.png";
+            TokensR[2] = "Datos\\3r.png";
+            TokensR[3] = "Datos\\4r.png";
+            TokensR[4] = "Datos\\5r.png";
+            TokensR[5] = "Datos\\6r.png";
 
-            
+            TokensB[0] = "Datos\\1a.png";
+            TokensB[1] = "Datos\\2a.png";
+            TokensB[2] = "Datos\\3a.png";
+            TokensB[3] = "Datos\\4a.png";
+            TokensB[4] = "Datos\\5a.png";
+            TokensB[5] = "Datos\\6a.png";
 
             do
             {
@@ -42,8 +52,8 @@ namespace Mazecom
                 maze.GenerarLaberinto(21);
                 InitialMenu();
                 InitialSelectedPlay();
-                Player1 = new PlayerData("Carlos", Count, Tokens[0]);
-                Player2 = new PlayerData("Javier", Count, Tokens[1]);
+                Player1 = new PlayerData("Carlos", Count, TokensR);
+                Player2 = new PlayerData("Javier", Count, TokensB);
                 InitialCharacteAndItems();
                     if (!sessionEnded)
                     {
@@ -70,35 +80,39 @@ namespace Mazecom
                 }
                 else
                 {
-
-                    Sdl_Manager.DeleteHiddenScreen();
-                    if (Player1.Puntos > Player2.Puntos)
-                    {
-                        Sdl_Manager.WriteHiddenTxt("WIN RED",
-                    450, 200, //coordenadas
-                    200, 200, 200, //colores
-                    type1);
-                    }
-                    else
-                    {
-                        Sdl_Manager.WriteHiddenTxt("WIN BLUE",
-                    450, 200, //coordenadas
-                    200, 200, 200, //colores
-                    type1);
-                    }
-                    Sdl_Manager.DisplayHidden();
-                    if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
-                    {
-                        sessionEnded = true;
-                    }
-                    if (Sdl_Manager.KeyPressed(Sdl_Manager.keySpa))
-                    {
-                        gameOver = false ;
-                        ConsumedItems = 0;
-                    }
+                    FinalGame();
                 }
             }
             while (!sessionEnded);
+        }
+
+        private static void FinalGame()
+        {
+            Sdl_Manager.DeleteHiddenScreen();
+            if (Player1.Puntos > Player2.Puntos)
+            {
+                Sdl_Manager.WriteHiddenTxt("WIN RED",
+            450, 200, //coordenadas
+            200, 200, 200, //colores
+            type1);
+            }
+            else
+            {
+                Sdl_Manager.WriteHiddenTxt("WIN BLUE",
+            450, 200, //coordenadas
+            200, 200, 200, //colores
+            type1);
+            }
+            Sdl_Manager.DisplayHidden();
+            if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
+            {
+                sessionEnded = true;
+            }
+            if (Sdl_Manager.KeyPressed(Sdl_Manager.keySpa))
+            {
+                gameOver = false;
+                ConsumedItems = 0;
+            }
         }
 
         private static void InitialCharacteAndItems()
@@ -320,28 +334,116 @@ namespace Mazecom
                 }
             }
 
-            Sdl_Manager.WriteHiddenTxt(
-    "Humanity P1: " + Player1.Puntos,
-    40, 10,
-    255, 0, 0,
-    type);
-            Sdl_Manager.WriteHiddenTxt(
-    "Humanity P2: " + Player2.Puntos,
-    1000, 10,
-    0, 31, 63,
-    type);
-
+            InitPoints();
+            InitInstruction();
 
             for (int i = 0; i < cantItems; i++)
             {
                 items[i].Draw();
             }
-            for(int i = 0; i < Count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 Player1.tokens[i].Move(Player1.tokens[i].PosX, Player1.tokens[i].PosY);
                 Player2.tokens[i].Move(Player2.tokens[i].PosX, Player2.tokens[i].PosY);
             }
             Sdl_Manager.DisplayHidden();
+        }
+
+        private static void InitPoints()
+        {
+            Sdl_Manager.WriteHiddenTxt(
+                "Humanity P1: " + Player1.Puntos,
+                40, 10,
+                255, 0, 0,
+                type);
+
+            Sdl_Manager.WriteHiddenTxt(
+    "Humanity P2: " + Player2.Puntos,
+    1000, 10,
+    0, 31, 63,
+    type);
+        }
+
+        private static void InitInstruction()
+        {
+            if (Turno == 1)
+            {
+                Sdl_Manager.WriteHiddenTxt(
+                    "Es tu turno ",
+                    70, 150,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "Presiona la tecla ",
+                    45, 200,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "que indique la ficha ",
+                    20, 250,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "a utilizar. Luego",
+                    40, 300,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "utilice las flechas ",
+                    25, 350,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "de direccion para ",
+                    35, 400,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "mover la ficha ",
+                    50, 450,
+                    255, 0, 0,
+                    type);
+
+
+            }
+            else
+            {
+                Sdl_Manager.WriteHiddenTxt(
+                    "Es tu turno ",
+                    1010, 150,
+                    0, 31, 63,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "Presiona la tecla ",
+                    970, 200,
+                    0, 31, 63,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "que indique la ficha ",
+                    940, 250,
+                    0, 31, 63,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "a utilizar. Luego",
+                    960, 300,
+                    0, 31, 63,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "utilice las flechas ",
+                    945, 350,
+                    0, 31, 63,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "de direccion para ",
+                    955, 400,
+                    0, 31, 63,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "mover la ficha ",
+                    970, 450,
+                    0, 31, 63,
+                    type);
+            }
         }
 
         private static  void ComprobarEntradaUsuario()
