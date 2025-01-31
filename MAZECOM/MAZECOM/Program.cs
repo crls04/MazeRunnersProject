@@ -21,34 +21,28 @@ namespace Mazecom
         static Maze maze;
         static PlayerData Player1,Player2;
         static string[] Tokens = new string[2];
-        static int Count = 5;
+        static int Count;
+        static Token TokenSelected;
+        static int Turno = 1;
+
         static void Main(string[] args)
         {
             Tokens[0] = "Datos\\RedHollow.png";
             Tokens[1] = "Datos\\BlueHollow.png";
 
-            Player1 = new PlayerData("Carlos", Count, Tokens[0]);
-            Player2 = new PlayerData("Javier", Count, Tokens[1]);
-
             InitializeSession();
             maze = new Maze();
             maze.GenerarLaberinto(21);
-
+          
             do
             {
                 InitialMenu();
                 InitialSelectedPlay();
-                for (int i = 12; i < maze.maze.GetLength(0); i++)
-                {
-                    for (int j = 12; j < maze.maze.GetLength(1); j++)
-                    {
-                        if (maze.maze[i, j] == ' ')
-                        {
-                            Player1.tokens[0].Move(maze.xMap + i * maze.broadTile, maze.yMap + j * maze.highTile);
+                Player1 = new PlayerData("Carlos", Count, Tokens[0]);
+                Player2 = new PlayerData("Javier", Count, Tokens[1]);
+                TokenSelected = Player1.tokens[0];
+                InitialCharacteAndItems();
 
-                        }
-                    }
-                }
                 if (!sessionEnded)
                 {
 
@@ -59,7 +53,7 @@ namespace Mazecom
                     {
 
                         DrawPantalla(maze);
-                        ComprobarEntradaUsuario(Player1.tokens[0]);
+                        ComprobarEntradaUsuario(TokenSelected);
                         ComprobarEstadoDelJuego();
                         PausaHastaFinDeFotograma();
                     }
@@ -67,6 +61,54 @@ namespace Mazecom
             }
             while (!sessionEnded);
         }
+
+        private static void InitialCharacteAndItems()
+        {
+            int colocados = 0;
+            Random generador = new Random();
+            while (colocados < Count)
+            {
+                int i = generador.Next(0, maze.maze.GetLength(0));
+                int j = generador.Next(0, maze.maze.GetLength(1));
+                if (maze.maze[i, j] == ' ')
+                {
+                    Player1.tokens[colocados].Move(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                    colocados++;
+                }
+            }
+            colocados = 0;
+            while (colocados < Count)
+            {
+                int i = generador.Next(0, maze.maze.GetLength(0));
+                int j = generador.Next(0, maze.maze.GetLength(1));
+                if (maze.maze[i, j] == ' ')
+                {
+                    Player2.tokens[colocados].Move(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                    colocados++;
+                }
+            }
+
+            cantItems = 10;
+            items = new Sprites[cantItems];
+            int item = 0;
+            while (item < cantItems)
+            {
+                int i = generador.Next(0, maze.maze.GetLength(0));
+                int j = generador.Next(0, maze.maze.GetLength(1));
+                if (maze.maze[i, j] == ' ')
+                {
+                    if (item < items.Length)
+                    {
+                        items[item] = new Sprites("Datos\\soul.png");
+                        items[item].MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                        items[item].SetBroadHigh(10, 10);
+                        item++;
+                    }
+                }
+            }
+
+        }
+
         private static void InitializeSession()
         {
             Sdl_Manager.Initialize(1280, 680, 24);
@@ -205,10 +247,6 @@ namespace Mazecom
 
             walls = new Sprites[maze.maze.GetLength(0), maze.maze.GetLength(1)];
 
-            cantItems = 10;
-            items = new Sprites[cantItems];
-            int item = 0;
-
             for (int i = 0; i < maze.maze.GetLength(0); i++)
             {
                 for (int j = 0; j < maze.maze.GetLength(1); j++)
@@ -220,17 +258,7 @@ namespace Mazecom
                             maze.yMap + i * maze.highTile);
                         walls[i, j].SetBroadHigh(maze.broadTile, maze.highTile);
                     }
-
-                    if (maze.maze[i, j] == ' ')
-                    {
-                        if (item < items.Length)
-                        {
-                            items[item] = new Sprites("Datos\\soul.png");
-                            items[item].MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
-                            items[item].SetBroadHigh(10, 10);
-                            item++;
-                        }
-                    }
+                  
                 }
             }
             gameOver = false;
@@ -262,7 +290,7 @@ namespace Mazecom
             Sdl_Manager.WriteHiddenTxt(
     "Humanity P2: " + Player2.Puntos,
     1000, 10,
-    0, 0, 255,
+    0, 31, 63,
     type);
 
 
@@ -270,9 +298,11 @@ namespace Mazecom
             {
                 items[i].Draw();
             }
-
-            //Modifiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
-            Player1.tokens[0].Move(Player1.tokens[0].PosX, Player1.tokens[0].PosY);
+            for(int i = 0; i < Count; i++)
+            {
+                Player1.tokens[i].Move(Player1.tokens[i].PosX, Player1.tokens[i].PosY);
+                Player2.tokens[i].Move(Player2.tokens[i].PosX, Player2.tokens[i].PosY);
+            }
             Sdl_Manager.DisplayHidden();
         }
 
