@@ -4,6 +4,7 @@ using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Mazecom
@@ -14,7 +15,8 @@ namespace Mazecom
         static bool sessionEnded;
         static Sprites[] items;
         static Sprites[,] walls;
-        static int cantItems;
+        static int cantItems = 1;
+        static int ConsumedItems = 0;
         static Font type;
         static Font type1;
         static Sound sound;
@@ -24,38 +26,75 @@ namespace Mazecom
         static int Count;
         static Token TokenSelected;
         static int Turno = 1;
-
         static void Main(string[] args)
         {
             Tokens[0] = "Datos\\RedHollow.png";
             Tokens[1] = "Datos\\BlueHollow.png";
 
-            InitializeSession();
-            maze = new Maze();
-            maze.GenerarLaberinto(21);
-          
+            
+
             do
             {
+                if (!gameOver)
+                {
+                    InitializeSession();
+                maze = new Maze();
+                maze.GenerarLaberinto(21);
                 InitialMenu();
                 InitialSelectedPlay();
                 Player1 = new PlayerData("Carlos", Count, Tokens[0]);
                 Player2 = new PlayerData("Javier", Count, Tokens[1]);
-                TokenSelected = Player1.tokens[0];
                 InitialCharacteAndItems();
-
-                if (!sessionEnded)
-                {
-
-
-                    InitializeGame(maze);
-
-                    while (!gameOver)
+                    if (!sessionEnded)
                     {
 
-                        DrawPantalla(maze);
-                        ComprobarEntradaUsuario(TokenSelected);
-                        ComprobarEstadoDelJuego();
-                        PausaHastaFinDeFotograma();
+
+
+                        InitializeGame(maze);
+
+                        while (!gameOver)
+                        {
+
+                            DrawPantalla(maze);
+                            ComprobarEntradaUsuario();
+                            ComprobarEstadoDelJuego();
+                            PausaHastaFinDeFotograma();
+
+                            if (ConsumedItems == cantItems)
+                            {
+                                gameOver = true;
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+
+                    Sdl_Manager.DeleteHiddenScreen();
+                    if (Player1.Puntos > Player2.Puntos)
+                    {
+                        Sdl_Manager.WriteHiddenTxt("WIN RED",
+                    450, 200, //coordenadas
+                    200, 200, 200, //colores
+                    type1);
+                    }
+                    else
+                    {
+                        Sdl_Manager.WriteHiddenTxt("WIN BLUE",
+                    450, 200, //coordenadas
+                    200, 200, 200, //colores
+                    type1);
+                    }
+                    Sdl_Manager.DisplayHidden();
+                    if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
+                    {
+                        sessionEnded = true;
+                    }
+                    if (Sdl_Manager.KeyPressed(Sdl_Manager.keySpa))
+                    {
+                        gameOver = false ;
+                        ConsumedItems = 0;
                     }
                 }
             }
@@ -88,7 +127,6 @@ namespace Mazecom
                 }
             }
 
-            cantItems = 10;
             items = new Sprites[cantItems];
             int item = 0;
             while (item < cantItems)
@@ -306,27 +344,113 @@ namespace Mazecom
             Sdl_Manager.DisplayHidden();
         }
 
-        private static void ComprobarEntradaUsuario(Token token)
+        private static  void ComprobarEntradaUsuario()
         {
-            if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyLf))
-                && PossibleToMove(token.PosX - 30, token.PosY, token.PosX, token.PosY + 30))
-                token.PosX -= 30;
-            if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyRg))
-                && PossibleToMove(token.PosX + 30, token.PosY, token.PosX + 60, token.PosY + 30))
-                token.PosX += 30;
-            if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyUp))
-                && PossibleToMove(token.PosX, token.PosY - 30, token.PosX + 30, token.PosY))
-                token.PosY -= 30;
-            if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyDown))
-                && PossibleToMove(token.PosX, token.PosY + 30, token.PosX + 30, token.PosY + 60))
-                token.PosY += 30;
+            if (Sdl_Manager.KeyPressed(Sdl_Manager.key1))
+            {
+                if(Turno == 1)
+                {
+                    TokenSelected = Player1.tokens[0];
+                }
+                else
+                {
+                    TokenSelected = Player2.tokens[0];
+                }
+            }
+            if (Sdl_Manager.KeyPressed(Sdl_Manager.key2) && Count >= 2)
+            {
+                if (Turno == 1)
+                {
+                    TokenSelected = Player1.tokens[1];
+                }
+                else
+                {
+                    TokenSelected = Player2.tokens[1];
+                }
+            }
+            if (Sdl_Manager.KeyPressed(Sdl_Manager.key3) && Count >= 3)
+            {
+                if (Turno == 1)
+                {
+                    TokenSelected = Player1.tokens[2];
+                }
+                else
+                {
+                    TokenSelected = Player2.tokens[2];
+                }
+            }
+            if (Sdl_Manager.KeyPressed(Sdl_Manager.key4) && Count >= 4)
+            {
+                if (Turno == 1)
+                {
+                    TokenSelected = Player1.tokens[3];
+                }
+                else
+                {
+                    TokenSelected = Player2.tokens[3];
+                }
+            }
+            if (Sdl_Manager.KeyPressed(Sdl_Manager.key5) && Count >= 5)
+            {
+                if (Turno == 1)
+                {
+                    TokenSelected = Player1.tokens[4];
+                }
+                else
+                {
+                    TokenSelected = Player2.tokens[4];
+                }
+            }
+            if (Sdl_Manager.KeyPressed(Sdl_Manager.key6) && Count >= 6)
+            {
+                if (Turno == 1)
+                {
+                    TokenSelected = Player1.tokens[5];
+                }
+                else
+                {
+                    TokenSelected = Player2.tokens[5];
+                }
+            }
 
-
+            if (TokenSelected != null)
+            {
+                if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyLf))
+                    && PossibleToMove(TokenSelected.PosX - 30, TokenSelected.PosY, TokenSelected.PosX, TokenSelected.PosY + 30))
+                {
+                    TokenSelected.PosX -= 30;
+                    TokenSelected = null;
+                    Turno = Turno == 1 ? 2 : 1;
+                }
+                if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyRg))
+                    && PossibleToMove(TokenSelected.PosX + 30, TokenSelected.PosY, TokenSelected.PosX + 60, TokenSelected.PosY + 30))
+                {
+                    TokenSelected.PosX += 30;
+                    TokenSelected = null;
+                    Turno = Turno == 1 ? 2 : 1;
+                }
+                if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyUp))
+                    && PossibleToMove(TokenSelected.PosX, TokenSelected.PosY - 30, TokenSelected.PosX + 30, TokenSelected.PosY))
+                {
+                    TokenSelected.PosY -= 30;
+                    TokenSelected = null;
+                    Turno = Turno == 1 ? 2 : 1;
+                }
+                if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyDown))
+                    && PossibleToMove(TokenSelected.PosX, TokenSelected.PosY + 30, TokenSelected.PosX + 30, TokenSelected.PosY + 60))
+                {
+                    TokenSelected.PosY += 30;
+                    TokenSelected = null;
+                    Turno = Turno == 1 ? 2 : 1;
+                }
+            }
+              
             if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
                 gameOver = true;
+
+            
         }
 
-        //modiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
         private static void ComprobarEstadoDelJuego()
         {
             for (int i = 0; i < Player1.tokens.Length; i++)
@@ -334,8 +458,16 @@ namespace Mazecom
                 if (Colisiona(items, Player1.tokens[i].sprite))
                 {
                     Player1.Puntos += 10;
+                    ConsumedItems += 1;
                     sound.Play();
                 }
+                if (Colisiona(items, Player2.tokens[i].sprite))
+                {
+                    Player2.Puntos += 10;
+                    ConsumedItems += 1;
+                    sound.Play();
+                }
+                
             }
 
 
@@ -376,4 +508,6 @@ namespace Mazecom
             return true;
         }
     }
+
+
 }
