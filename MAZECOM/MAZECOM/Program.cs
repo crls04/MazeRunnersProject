@@ -33,7 +33,8 @@ namespace Mazecom
         static DamageTramp[] TrapDamage;
         static TeleportTrap[] TeleTrap;
         static int TurnoAnterior = 1;
-
+        static Sprites Obstacle;
+        static int count = 0;
         static void Main(string[] args)
         {
             TokensR[0] = "Datos\\1r.png";
@@ -50,18 +51,33 @@ namespace Mazecom
             TokensB[4] = "Datos\\5a.png";
             TokensB[5] = "Datos\\6a.png";
 
+            Obstacle = new Sprites("Datos\\eye.png");
+
             do
             {
                 if (!gameOver)
                 {
                     InitializeSession();
-                maze = new Maze();
-                maze.GenerarLaberinto(21);
-                InitialMenu();
-                InitialSelectedPlay();
-                Player1 = new PlayerData("Carlos", Count, TokensR);
-                Player2 = new PlayerData("Javier", Count, TokensB);
-                    
+                    Random generador = new Random();
+                    maze = new Maze();
+                    maze.GenerarLaberinto(21);
+                    InitialMenu();
+                    InitialSelectedPlay();
+                    Player1 = new PlayerData("Carlos", Count, TokensR);
+                    Player2 = new PlayerData("Javier", Count, TokensB);
+                    bool obstaclemove = true;
+
+                    while (obstaclemove)
+                    {
+                        int i = generador.Next(0, maze.maze.GetLength(0));
+                        int j = generador.Next(0, maze.maze.GetLength(1));
+                        if (maze.maze[i, j] == ' ')
+                        {
+                            Obstacle.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                            Obstacle.SetBroadHigh(maze.broadTile, maze.highTile);
+                            obstaclemove = false;
+                        }
+                    }
                     InitialCharacteAndItems();
                     if (!sessionEnded)
                     {
@@ -77,7 +93,7 @@ namespace Mazecom
                             ComprobarEntradaUsuario();
                             ComprobarEstadoDelJuego();
                             PausaHastaFinDeFotograma();
-                            if(Turno != TurnoAnterior)RestColdown();
+                            if (Turno != TurnoAnterior) RestColdown();
                             IsMove();
 
                             if (ConsumedItems == cantItems)
@@ -162,6 +178,18 @@ namespace Mazecom
         }
         private static void RestColdown()
         {
+            Random generador = new Random();
+            count++;
+            while (count == 5)
+            {
+                int i = generador.Next(0, maze.maze.GetLength(0));
+                int j = generador.Next(0, maze.maze.GetLength(1));
+                if (maze.maze[i, j] == ' ')
+                {
+                    Obstacle.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                    count = 0;
+                }
+            }
             if (Turno == 1)
             {
                 TurnoAnterior = 2;
@@ -257,7 +285,7 @@ namespace Mazecom
                 int j = generador.Next(0, maze.maze.GetLength(1));
                 if (maze.maze[i, j] == ' ')
                 {
-                    TrapFrost[frost] = new FrostTrap("Frost", new Sprites("Datos\\reja.png"));
+                    TrapFrost[frost] = new FrostTrap("Frost", new Sprites("Datos\\cadenas.png"));
                     TrapFrost[frost].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
                     TrapFrost[frost].sprite.SetBroadHigh(10, 10);
                     frost++;
@@ -272,7 +300,7 @@ namespace Mazecom
                 int j = generador.Next(0, maze.maze.GetLength(1));
                 if (maze.maze[i, j] == ' ')
                 {
-                    TrapDamage[damage] = new DamageTramp("Damage", new Sprites("Datos\\reja.png"));
+                    TrapDamage[damage] = new DamageTramp("Damage", new Sprites("Datos\\damage trap.png"));
                     TrapDamage[damage].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
                     TrapDamage[damage].sprite.SetBroadHigh(10, 10);
                     damage++;
@@ -286,7 +314,7 @@ namespace Mazecom
                 int j = generador.Next(0, maze.maze.GetLength(1));
                 if (maze.maze[i, j] == ' ')
                 {
-                    TeleTrap[tele] = new TeleportTrap("Teleport", new Sprites("Datos\\reja.png"));
+                    TeleTrap[tele] = new TeleportTrap("Teleport", new Sprites("Datos\\hole.png"));
                     TeleTrap[tele].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
                     TeleTrap[tele].sprite.SetBroadHigh(10, 10);
                     tele++;
@@ -469,6 +497,7 @@ namespace Mazecom
 
             InitPoints();
             InitInstruction();
+            Obstacle.Draw();
 
             for (int i = 0; i < cantItems; i++)
             {
@@ -670,7 +699,8 @@ namespace Mazecom
                     Turno = Turno == 1 ? 2 : 1;
                 }
                 if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyRg))
-                    && PossibleToMove(TokenSelected.PosX + 30, TokenSelected.PosY, TokenSelected.PosX + 60, TokenSelected.PosY + 30))
+                    && PossibleToMove(TokenSelected.PosX + 30, TokenSelected.PosY, TokenSelected.PosX + 60, TokenSelected.PosY + 30)
+                   )
                 {
                     TokenSelected.PosX += 30;
                     TokenSelected = null;
@@ -761,6 +791,7 @@ namespace Mazecom
                     if (walls[i, j] != null)
                     {
                         if (walls[i, j].Collides(
+                            xInit, yInit, xEnd, yEnd) || Obstacle.Collides(
                             xInit, yInit, xEnd, yEnd))
                             return false;
                     }

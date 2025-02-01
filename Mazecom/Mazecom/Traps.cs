@@ -11,7 +11,6 @@ namespace Mazecom
 {
     internal class Traps
     {
-        public int PosX, PosY;
         public string Name;
         public Sprites sprite;
         public bool activated = false;
@@ -66,7 +65,6 @@ namespace Mazecom
             }
         }
     }
-
     class TeleportTrap : Traps
     {
         public TeleportTrap(string name, Sprites sprite) : base(name, sprite)
