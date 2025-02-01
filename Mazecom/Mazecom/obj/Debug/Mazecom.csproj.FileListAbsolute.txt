@@ -8,3 +8,4 @@ E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Mazecom.exe
 E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\Mazecom.pdb
 E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.exe
 E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\obj\Debug\Mazecom.pdb
+E:\MAZE RUNNERS\MazeRunnersProject\Mazecom\Mazecom\bin\Debug\SDL2-CS.dll

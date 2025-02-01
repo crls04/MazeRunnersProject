@@ -31,6 +31,7 @@ namespace Mazecom
     {
         public  Sprites sprite;
         public int PosX, PosY;
+        public int congelada = 0;
 
         public Token(string img,int x, int y)
         {

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO.MemoryMappedFiles;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SDL2;
 
 namespace Mazecom
 {
@@ -27,6 +29,11 @@ namespace Mazecom
         static int Count;
         static Token TokenSelected;
         static int Turno = 1;
+        static FrostTrap[] TrapFrost;
+        static DamageTramp[] TrapDamage;
+        static TeleportTrap[] TeleTrap;
+        static int TurnoAnterior = 1;
+
         static void Main(string[] args)
         {
             TokensR[0] = "Datos\\1r.png";
@@ -54,7 +61,8 @@ namespace Mazecom
                 InitialSelectedPlay();
                 Player1 = new PlayerData("Carlos", Count, TokensR);
                 Player2 = new PlayerData("Javier", Count, TokensB);
-                InitialCharacteAndItems();
+                    
+                    InitialCharacteAndItems();
                     if (!sessionEnded)
                     {
 
@@ -69,13 +77,14 @@ namespace Mazecom
                             ComprobarEntradaUsuario();
                             ComprobarEstadoDelJuego();
                             PausaHastaFinDeFotograma();
+                            if(Turno != TurnoAnterior)RestColdown();
+                            IsMove();
 
                             if (ConsumedItems == cantItems)
                             {
                                 gameOver = true;
                             }
                         }
-
                     }
                 }
                 else
@@ -84,6 +93,91 @@ namespace Mazecom
                 }
             }
             while (!sessionEnded);
+        }
+
+        private static void IsMove()
+        {
+            bool PosibleJugar = false;
+            if (Turno == 1)
+            {
+                TurnoAnterior = 1;
+                for (int i = 0; i < Player1.tokens.Length; i++)
+                {
+                    if (Player1.tokens[i].congelada == 0)
+                    {
+                        PosibleJugar = true;
+                    }
+                }
+            }
+            else
+            {
+                TurnoAnterior = 2;
+                for (int i = 0; i < Player2.tokens.Length; i++)
+                {
+                    if (Player2.tokens[i].congelada == 0)
+                    {
+                        PosibleJugar = true;
+                    }
+                }
+            }
+            if (!PosibleJugar)
+            {
+                if (Turno == 1)
+                {
+                    Turno = 2;
+                    Message("Jugador 1 no puede mover ninguna ficha");
+                }
+                else
+                {
+                    Turno = 1;
+                    Message("Jugador 2 no puede mover ninguna ficha");
+                }
+            }
+        }
+
+        private static void Message(string Message)
+        {
+            bool active = true;
+            Font type = new Font("Datos\\Joystix.ttf", 30);
+            while (active)
+            {
+                Sdl_Manager.DeleteHiddenScreen();
+                Sdl_Manager.WriteHiddenTxt(
+                    "Advertencia",
+                    500, 150,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(Message,
+                    170, 250,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "Presiona la tecla Space para continuar",
+                    200, 500,
+                    255, 0, 0,
+                    type);
+                Sdl_Manager.DisplayHidden();
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.keySpa)) active = false;
+            }
+        }
+        private static void RestColdown()
+        {
+            if (Turno == 1)
+            {
+                TurnoAnterior = 2;
+                for (int i = 0; i < Player1.tokens.Length; i++)
+                {
+                    if (Player1.tokens[i].congelada > 0) Player1.tokens[i].congelada--;
+                }
+            }
+            else
+            {
+                TurnoAnterior = 1;
+                for (int i = 0; i < Player2.tokens.Length; i++)
+                {
+                    if (Player2.tokens[i].congelada > 0) Player2.tokens[i].congelada--;
+                }
+            }
         }
 
         private static void FinalGame()
@@ -149,16 +243,55 @@ namespace Mazecom
                 int j = generador.Next(0, maze.maze.GetLength(1));
                 if (maze.maze[i, j] == ' ')
                 {
-                    if (item < items.Length)
-                    {
-                        items[item] = new Sprites("Datos\\soul.png");
-                        items[item].MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
-                        items[item].SetBroadHigh(10, 10);
-                        item++;
-                    }
+                    items[item] = new Sprites("Datos\\soul.png");
+                    items[item].MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                    items[item].SetBroadHigh(10, 10);
+                    item++;
+                }
+            }
+            int frost = 0;
+            TrapFrost = new FrostTrap[5];
+            while (frost < TrapFrost.Length)
+            {
+                int i = generador.Next(0, maze.maze.GetLength(0));
+                int j = generador.Next(0, maze.maze.GetLength(1));
+                if (maze.maze[i, j] == ' ')
+                {
+                    TrapFrost[frost] = new FrostTrap("Frost", new Sprites("Datos\\reja.png"));
+                    TrapFrost[frost].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                    TrapFrost[frost].sprite.SetBroadHigh(10, 10);
+                    frost++;
                 }
             }
 
+            int damage = 0;
+            TrapDamage = new DamageTramp[5];
+            while (damage < TrapDamage.Length)
+            {
+                int i = generador.Next(0, maze.maze.GetLength(0));
+                int j = generador.Next(0, maze.maze.GetLength(1));
+                if (maze.maze[i, j] == ' ')
+                {
+                    TrapDamage[damage] = new DamageTramp("Damage", new Sprites("Datos\\reja.png"));
+                    TrapDamage[damage].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                    TrapDamage[damage].sprite.SetBroadHigh(10, 10);
+                    damage++;
+                }
+            }
+            int tele = 0;
+            TeleTrap = new TeleportTrap[5];
+            while (tele < TeleTrap.Length)
+            {
+                int i = generador.Next(0, maze.maze.GetLength(0));
+                int j = generador.Next(0, maze.maze.GetLength(1));
+                if (maze.maze[i, j] == ' ')
+                {
+                    TeleTrap[tele] = new TeleportTrap("Teleport", new Sprites("Datos\\reja.png"));
+                    TeleTrap[tele].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
+                    TeleTrap[tele].sprite.SetBroadHigh(10, 10);
+                    tele++;
+                }
+            }
         }
 
         private static void InitializeSession()
@@ -341,6 +474,18 @@ namespace Mazecom
             {
                 items[i].Draw();
             }
+            for (int i = 0; i < TrapFrost.Length; i++)
+            {
+               if(!TrapFrost[i].activated) TrapFrost[i].sprite.Draw();
+            }
+            for (int i = 0; i < TrapDamage.Length; i++)
+            {
+                if (!TrapDamage[i].activated) TrapDamage[i].sprite.Draw();
+            }
+            for (int i = 0; i < TeleTrap.Length; i++)
+            {
+                if (!TeleTrap[i].activated) TeleTrap[i].sprite.Draw();
+            }
             for (int i = 0; i < Count; i++)
             {
                 Player1.tokens[i].Move(Player1.tokens[i].PosX, Player1.tokens[i].PosY);
@@ -515,7 +660,7 @@ namespace Mazecom
                 }
             }
 
-            if (TokenSelected != null)
+            if (TokenSelected != null && TokenSelected.congelada == 0)
             {
                 if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyLf))
                     && PossibleToMove(TokenSelected.PosX - 30, TokenSelected.PosY, TokenSelected.PosX, TokenSelected.PosY + 30))
@@ -569,7 +714,21 @@ namespace Mazecom
                     ConsumedItems += 1;
                     sound.Play();
                 }
-                
+                for(int s = 0; s < TrapFrost.Length;s++)
+                {
+                    if (TrapFrost[s].sprite.Collides(Player1.tokens[i].sprite)) TrapFrost[s].Active(Player1.tokens[i]);
+                    if (TrapFrost[s].sprite.Collides(Player2.tokens[i].sprite)) TrapFrost[s].Active(Player2.tokens[i]);
+                }
+                for(int s = 0; s < TrapDamage.Length;s++)
+                {
+                    if (TrapDamage[s].sprite.Collides(Player1.tokens[i].sprite)) TrapDamage[s].Active(Player1);
+                    if (TrapDamage[s].sprite.Collides(Player2.tokens[i].sprite)) TrapDamage[s].Active(Player2);
+                }
+                for (int s = 0; s < TeleTrap.Length; s++)
+                {
+                    if (TeleTrap[s].sprite.Collides(Player1.tokens[i].sprite))TeleTrap[s].Active(Player1.tokens[i],maze);
+                    if (TeleTrap[s].sprite.Collides(Player2.tokens[i].sprite))TeleTrap[s].Active(Player2.tokens[i],maze);
+                }
             }
 
 

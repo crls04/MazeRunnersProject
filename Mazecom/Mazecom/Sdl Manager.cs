@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using Tao.Sdl;
+using SDL2;
 
 namespace Mazecom
 {
@@ -13,7 +14,7 @@ namespace Mazecom
     {
         // Atributos
 
-        static IntPtr hiddenScreen;
+        static public IntPtr hiddenScreen;
         static int broad, high;
 
         // Operaciones
@@ -40,7 +41,7 @@ namespace Mazecom
             if (SdlMixer.Mix_OpenAudio(22050, unchecked(Sdl.AUDIO_S16LSB), 2, 1024) == -1)
                 Error("No se ha podido inicializar el sonido");
         }
-
+        
         /// Dibuja una image en pantalla oculta, en ciertas coordenadas
         public static void DeleteHiddenScreen()
         {
