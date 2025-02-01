@@ -198,6 +198,8 @@ namespace Mazecom
                 for (int i = 0; i < Player1.tokens.Length; i++)
                 {
                     if (Player1.tokens[i].congelada > 0) Player1.tokens[i].congelada--;
+                    if (Player1.tokens[i].coldown > 0) Player1.tokens[i].coldown--;
+                    if (Player1.tokens[i].coldown == 0) Player1.tokens[i].velocity = 1;
                 }
             }
             else
@@ -206,6 +208,8 @@ namespace Mazecom
                 for (int i = 0; i < Player2.tokens.Length; i++)
                 {
                     if (Player2.tokens[i].congelada > 0) Player2.tokens[i].congelada--;
+                    if (Player2.tokens[i].coldown > 0) Player2.tokens[i].coldown--;
+                    if (Player2.tokens[i].coldown == 0) Player2.tokens[i].velocity = 1;
                 }
             }
         }
@@ -681,6 +685,11 @@ namespace Mazecom
                     50, 450,
                     255, 0, 0,
                     type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "H para la Habilidad ",
+                    30, 500,
+                    255, 0, 0,
+                    type);
 
 
             }
@@ -719,6 +728,11 @@ namespace Mazecom
                 Sdl_Manager.WriteHiddenTxt(
                     "mover la ficha ",
                     970, 450,
+                    0, 31, 63,
+                    type);
+                Sdl_Manager.WriteHiddenTxt(
+                    "H para la Habilidad ",
+                    950, 500,
                     0, 31, 63,
                     type);
             }
@@ -796,31 +810,37 @@ namespace Mazecom
             if (TokenSelected != null && TokenSelected.congelada == 0)
             {
                 if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyLf))
-                    && PossibleToMove(TokenSelected.PosX - 30, TokenSelected.PosY, TokenSelected.PosX, TokenSelected.PosY + 30))
+                    && PossibleToMove(TokenSelected.PosX - 30 * TokenSelected.velocity, TokenSelected.PosY, TokenSelected.PosX, TokenSelected.PosY + 30))
                 {
-                    TokenSelected.PosX -= 30;
+                    TokenSelected.PosX -= 30 * TokenSelected.velocity;
                     TokenSelected = null;
                     Turno = Turno == 1 ? 2 : 1;
                 }
                 if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyRg))
-                    && PossibleToMove(TokenSelected.PosX + 30, TokenSelected.PosY, TokenSelected.PosX + 60, TokenSelected.PosY + 30)
+                    && PossibleToMove(TokenSelected.PosX + 30 * TokenSelected.velocity, TokenSelected.PosY, TokenSelected.PosX + 60 , TokenSelected.PosY + 30)
                    )
                 {
-                    TokenSelected.PosX += 30;
+                    TokenSelected.PosX += 30 * TokenSelected.velocity;
                     TokenSelected = null;
                     Turno = Turno == 1 ? 2 : 1;
                 }
                 if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyUp))
-                    && PossibleToMove(TokenSelected.PosX, TokenSelected.PosY - 30, TokenSelected.PosX + 30, TokenSelected.PosY))
+                    && PossibleToMove(TokenSelected.PosX, TokenSelected.PosY - 30 * TokenSelected.velocity, TokenSelected.PosX + 30, TokenSelected.PosY))
                 {
-                    TokenSelected.PosY -= 30;
+                    TokenSelected.PosY -= 30 * TokenSelected.velocity;
                     TokenSelected = null;
                     Turno = Turno == 1 ? 2 : 1;
                 }
                 if ((Sdl_Manager.KeyPressed(Sdl_Manager.keyDown))
-                    && PossibleToMove(TokenSelected.PosX, TokenSelected.PosY + 30, TokenSelected.PosX + 30, TokenSelected.PosY + 60))
+                    && PossibleToMove(TokenSelected.PosX, TokenSelected.PosY + 30 * TokenSelected.velocity, TokenSelected.PosX + 30, TokenSelected.PosY + 60))
                 {
-                    TokenSelected.PosY += 30;
+                    TokenSelected.PosY += 30 * TokenSelected.velocity;
+                    TokenSelected = null;
+                    Turno = Turno == 1 ? 2 : 1;
+                }
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.keyH))
+                {
+                    TokenSelected.Hability();
                     TokenSelected = null;
                     Turno = Turno == 1 ? 2 : 1;
                 }

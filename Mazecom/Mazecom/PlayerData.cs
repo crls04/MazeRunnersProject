@@ -32,6 +32,8 @@ namespace Mazecom
         public  Sprites sprite;
         public int PosX, PosY;
         public int congelada = 0;
+        public int velocity = 1;
+        public int coldown = 0;
 
         public Token(string img,int x, int y)
         {
@@ -46,6 +48,12 @@ namespace Mazecom
             PosY = y;
             sprite.MoverA(PosX, PosY);
             sprite.Draw();
+        }
+
+        public void Hability()
+        {
+            velocity = 2;
+            coldown = 3;
         }
     }
 }
