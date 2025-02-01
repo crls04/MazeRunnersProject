@@ -198,8 +198,12 @@ namespace Mazecom
                 for (int i = 0; i < Player1.tokens.Length; i++)
                 {
                     if (Player1.tokens[i].congelada > 0) Player1.tokens[i].congelada--;
-                    if (Player1.tokens[i].coldown > 0) Player1.tokens[i].coldown--;
-                    if (Player1.tokens[i].coldown == 0) Player1.tokens[i].velocity = 1;
+                    if (Player1.tokens[i].ActiveTime > 0) Player1.tokens[i].ActiveTime--;
+                    if (Player1.tokens[i].ActiveTime == 0)
+                    {
+                        Player1.tokens[i].velocity = 1;
+                        if (Player1.tokens[i].coldown > 0) Player1.tokens[i].coldown--;
+                    }
                 }
             }
             else
@@ -208,8 +212,12 @@ namespace Mazecom
                 for (int i = 0; i < Player2.tokens.Length; i++)
                 {
                     if (Player2.tokens[i].congelada > 0) Player2.tokens[i].congelada--;
-                    if (Player2.tokens[i].coldown > 0) Player2.tokens[i].coldown--;
-                    if (Player2.tokens[i].coldown == 0) Player2.tokens[i].velocity = 1;
+                    if (Player2.tokens[i].ActiveTime > 0) Player2.tokens[i].ActiveTime--;
+                    if (Player2.tokens[i].ActiveTime == 0)
+                    {
+                        Player2.tokens[i].velocity = 1;
+                        if (Player1.tokens[i].coldown > 0) Player1.tokens[i].coldown--;
+                    }
                 }
             }
         }
@@ -443,7 +451,7 @@ namespace Mazecom
             bool endMenu = false;
             Sdl_Manager.DeleteHiddenScreen();
 
-            Sdl_Manager.WriteHiddenTxt("MAZE RUNER",
+            Sdl_Manager.WriteHiddenTxt("The Abyss of Madness",
                 450, 200, //coordenadas
                 200, 200, 200, //colores
                 type1);
@@ -453,6 +461,10 @@ namespace Mazecom
                type);
             Sdl_Manager.WriteHiddenTxt("Pulsa ESCAPE para salir",
                 500, 400, //coordenadas
+               160, 160, 160, //colores
+               type);
+            Sdl_Manager.WriteHiddenTxt("Pulsa L para descubrir la verdad",
+                500, 450, //coordenadas
                160, 160, 160, //colores
                type);
 
@@ -466,6 +478,11 @@ namespace Mazecom
                     endMenu = true;
 
                 }
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.keyL))
+                {
+                    InitialLore();
+                }
+
                 if (Sdl_Manager.KeyPressed(Sdl_Manager.keyEsc))
                 {
                     endMenu = true;
@@ -480,7 +497,7 @@ namespace Mazecom
             bool endMenu = false;
             Sdl_Manager.DeleteHiddenScreen();
 
-            Sdl_Manager.WriteHiddenTxt("MAZE RUNER",
+            Sdl_Manager.WriteHiddenTxt("The Abyss of Madness",
                 450, 200, //coordenadas
                 200, 200, 200, //colores
                 type1);
@@ -561,6 +578,39 @@ namespace Mazecom
             }
             while (!endMenu);
         }
+        private static void InitialLore()
+        {
+            bool endMenu = false;
+            Sdl_Manager.DeleteHiddenScreen();
+
+            Sdl_Manager.WriteHiddenTxt("The Abyss of Madness",
+                450, 200, //coordenadas
+                200, 200, 200, //colores
+                type1);
+            Sdl_Manager.WriteHiddenTxt("",
+                450, 250, //coordenadas
+                200, 200, 200, //colores
+                type);
+            Sdl_Manager.WriteHiddenTxt("Pulse SPACE para retornar",
+                350, 600, //coordenadas
+               180, 180, 180, //colores
+               type);
+            ;
+
+            Sdl_Manager.DisplayHidden();
+
+            do
+            {
+                Sdl_Manager.Pause(20);
+                if (Sdl_Manager.KeyPressed(Sdl_Manager.keySpa))
+                {
+                    endMenu = true;
+                }
+                
+            }
+            while (!endMenu);
+        }
+
         private static void InitializeGame(Maze maze)
         {
             Random generador = new Random();

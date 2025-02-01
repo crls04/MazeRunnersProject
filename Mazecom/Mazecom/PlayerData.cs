@@ -33,8 +33,8 @@ namespace Mazecom
         public int PosX, PosY;
         public int congelada = 0;
         public int velocity = 1;
+        public int ActiveTime = 0;
         public int coldown = 0;
-
         public Token(string img,int x, int y)
         {
             sprite  = new Sprites(img);
@@ -52,8 +52,12 @@ namespace Mazecom
 
         public void Hability()
         {
-            velocity = 2;
-            coldown = 3;
+            if(coldown == 0)
+            {
+                velocity = 2;
+                ActiveTime = 3;
+                coldown = 3;
+            }
         }
     }
 }

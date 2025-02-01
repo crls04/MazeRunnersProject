@@ -17,7 +17,7 @@ namespace Mazecom
         static public IntPtr hiddenScreen;
         static int broad, high;
 
-        // Operaciones
+        
 
         /// Inicializa el modo grafico a un cierto ancho, alto y profundidad de color, p.ej. 640, 480, 24 bits
         public static void Initialize(int br, int hig, int colors)
