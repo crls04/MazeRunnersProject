@@ -17,7 +17,7 @@ namespace Mazecom
         static bool sessionEnded;
         static Sprites[] items;
         static Sprites[,] walls;
-        static int cantItems = 1;
+        static int cantItems = 11;
         static int ConsumedItems = 0;
         static Font type;
         static Font type1;
@@ -35,6 +35,7 @@ namespace Mazecom
         static int TurnoAnterior = 1;
         static Sprites Obstacle;
         static int count = 0;
+
         static void Main(string[] args)
         {
             TokensR[0] = "Datos\\1r.png";
@@ -176,6 +177,7 @@ namespace Mazecom
                 if (Sdl_Manager.KeyPressed(Sdl_Manager.keySpa)) active = false;
             }
         }
+
         private static void RestColdown()
         {
             Random generador = new Random();
@@ -275,6 +277,18 @@ namespace Mazecom
                     items[item].MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
                     items[item].SetBroadHigh(10, 10);
                     item++;
+                    for (int s = 0; s < cantItems;s++)
+                    {
+                        if(s != item-1 && items[s] != null)
+                        {
+                            if (items[item-1].Collides(items[s]))
+                            {
+                                item--;
+                                break;
+                            }
+                        }
+                    }
+
                 }
             }
             int frost = 0;
@@ -289,6 +303,25 @@ namespace Mazecom
                     TrapFrost[frost].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
                     TrapFrost[frost].sprite.SetBroadHigh(10, 10);
                     frost++;
+                    for (int s = 0; s < cantItems; s++)
+                    {
+                            if (items[s] != null && items[s].Collides(TrapFrost[frost-1].sprite))
+                            {
+                                frost--;
+                                break;
+                            }    
+                    }
+                    for (int s = 0; s < TrapFrost.Length; s++)
+                    {
+                        if (TrapFrost[s] != null && s != frost-1)
+                        {
+                            if (TrapFrost[frost-1].sprite.Collides(TrapFrost[s].sprite))
+                            {
+                                frost--;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -304,6 +337,36 @@ namespace Mazecom
                     TrapDamage[damage].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
                     TrapDamage[damage].sprite.SetBroadHigh(10, 10);
                     damage++;
+                    for (int s = 0; s < cantItems; s++)
+                    {
+                        if (items[s] != null && items[s].Collides(TrapDamage[damage-1].sprite))
+                        {
+                            damage--;
+                            break;
+                        }
+                    }
+                    for (int s = 0; s < TrapFrost.Length; s++)
+                    {
+                        if (TrapFrost[s] != null)
+                        {
+                            if (TrapDamage[damage-1].sprite.Collides(TrapFrost[s].sprite))
+                            {
+                                damage--;
+                                break;
+                            }
+                        }
+                    }
+                    for (int s = 0; s < TrapDamage.Length; s++)
+                    {
+                        if (TrapDamage[s] != null && s != damage-1)
+                        {
+                            if (TrapDamage[damage - 1].sprite.Collides(TrapDamage[s].sprite))
+                            {
+                                damage--;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             int tele = 0;
@@ -318,6 +381,47 @@ namespace Mazecom
                     TeleTrap[tele].sprite.MoverA(maze.xMap + j * maze.broadTile, maze.yMap + i * maze.highTile);
                     TeleTrap[tele].sprite.SetBroadHigh(10, 10);
                     tele++;
+                    for (int s = 0; s < cantItems; s++)
+                    {
+                        if (items[s] != null && items[s].Collides(TeleTrap[tele-1].sprite))
+                        {
+                            tele--;
+                            break;
+                        }
+                    }
+                    for (int s = 0; s < TrapFrost.Length; s++)
+                    {
+                        if (TrapFrost[s] != null)
+                        {
+                            if (TeleTrap[tele-1].sprite.Collides(TrapFrost[s].sprite))
+                            {
+                                tele--;
+                                break;
+                            }
+                        }
+                    }
+                    for (int s = 0; s < TrapDamage.Length; s++)
+                    {
+                        if (TrapDamage[s] != null)
+                        {
+                            if (TeleTrap[tele-1].sprite.Collides(TrapDamage[s].sprite))
+                            {
+                                tele--;
+                                break;
+                            }
+                        }
+                    }
+                    for (int s = 0; s < TeleTrap.Length; s++)
+                    {
+                        if (TeleTrap[s] != null && tele-1 != s)
+                        {
+                            if (TeleTrap[tele-1].sprite.Collides(TeleTrap[s].sprite))
+                            {
+                                tele--;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
